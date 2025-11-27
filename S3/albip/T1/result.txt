@@ -1,0 +1,4 @@
+Argument 0:./main
+Argument 1:q
+Argument 2:123
+digit Sum: 6

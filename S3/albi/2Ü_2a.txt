@@ -1,0 +1,15 @@
+//Aho Corasick searching pseudo code
+
+Algorithm AC_SEARCH(T, δ, S, O)
+    current ← root
+    for each symbol a in T:
+        while current ≠ root and δ(current, a) = ∅ do
+            current ← S(current)
+        if δ(current, a) ≠ ∅ then
+            current ← δ(current, a)
+        else
+            current ← root
+        if current is terminal then
+            output(O(current))
+
+

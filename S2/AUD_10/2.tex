@@ -1,0 +1,44 @@
+function editDistanceWithSteps(s: String, t: String): (Int, List[String]) =
+    let k = s.length
+    let l = t.length
+    let dp = 2D array of size (k+1) × (l+1)
+
+    // Step 1: Initialize base cases
+    for i from 0 to k:
+        dp[i][0] = i   // delete i characters from s
+    for j from 0 to l:
+        dp[0][j] = j   // insert j characters to build t
+
+    // Step 2: Fill the DP table
+    for i from 1 to k:
+        for j from 1 to l:
+            dp[i][j] = match s[i-1] == t[j-1]:
+                case true  => dp[i-1][j-1]    // no operation needed
+                case false => 1 + min(
+                                  dp[i-1][j],     // delete
+                                  dp[i][j-1],     // insert
+                                  dp[i-1][j-1]    // replace
+                              )
+
+    // Step 3: Backtracking to reconstruct operations
+    i = k
+    j = l
+    operations = empty list
+
+    while i > 0 or j > 0:
+        match (i > 0, j > 0, s[i-1] == t[j-1], dp[i][j]):
+            case (true, true, true, _) =>
+                i -= 1
+                j -= 1   // no operation, just move diagonally
+            case (true, true, false, v) if v == dp[i-1][j-1] + 1 =>
+                operations.prepend("Replace '" + s[i-1] + "' with '" + t[j-1] + "'")
+                i -= 1
+                j -= 1
+            case (true, _, _, v) if v == dp[i-1][j] + 1 =>
+                operations.prepend("Delete '" + s[i-1] + "'")
+                i -= 1
+            case (_, true, _, v) if v == dp[i][j-1] + 1 =>
+                operations.prepend("Insert '" + t[j-1] + "'")
+                j -= 1
+
+    return (dp[k][l], operations)
